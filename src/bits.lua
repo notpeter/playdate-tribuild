@@ -74,13 +74,13 @@ function bits.init()
     local right = points[3]
 
     local right1 = lerp2d(right, lerp2d(top, left, 0.5), 0.3)
-    local left1 = lerp2d(left, lerp2d(top, right, 0.5), 0.3)
+    local left1 = lerp2d(left, lerp2d(top, right, 0.5), 2.0)
     local top1 = lerp2d(top, lerp2d(left, right, 0.5), 0.3)
 
     local rate = 50
-    new_top = lerper2d(top, top1, rate)
+    new_top = lerper2d(top, top, rate)
     new_left = lerper2d(left, left1, rate)
-    new_right = lerper2d(right, right1, rate)
+    new_right = lerper2d(right, right, rate)
 end
 
 function bits.update()
