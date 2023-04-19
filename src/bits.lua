@@ -17,8 +17,7 @@ local function lerp(min, max, t)
 end
 
 local function lerp2d(p1, p2, t)
-    local q = point.new(lerp(p1.x, p2.x, t), lerp(p1.y, p2.y, t))
-    return q
+    return point.new(lerp(p1.x, p2.x, t), lerp(p1.y, p2.y, t))
 end
 
 -- local function lerper(min, max, steps)
@@ -47,12 +46,13 @@ local function lerper2d(p1, p2, steps)
         end
         step = step + direction
         local l = lerp2d(p1, p2, step/steps)
-        print(step, steps, direction, l)
         return l
     end
 end
 
 function bits.init()
+    -- local q = 1.1547
+    -- local width = 277
     local top = point.new(200, 0)
     local left = point.new(61, 239)
     local right = point.new(338, 239)
@@ -61,18 +61,20 @@ function bits.init()
     local left1 = lerp2d(top, right, 0.5)
     local right1 = lerp2d(top, left, 0.5)
 
-    print(top, top1)
     new_top = lerper2d(top, top1, 100)
+    new_left = lerper2d(left, left1, 100)
+    new_right = lerper2d(right, right1, 100)
 end
 
 function bits.update()
-    local q = 1.1547
-    local width = 277
-    -- local top = point.new(200, 0)
+    local top = point.new(200, 0)
     local left = point.new(61, 239)
     local right = point.new(338, 239)
 
-    local top = new_top()
+    -- local top = new_top()
+    local left = new_left()
+    local right = new_right()
+
 
     gfx.clear()
     for i = 1,9 do
