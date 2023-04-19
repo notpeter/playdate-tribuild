@@ -9,6 +9,7 @@ import "CoreLibs/crank"
 import "bits"
 
 local function setup()
+    math.randomseed(playdate.getSecondsSinceEpoch())
     bits.init()
     playdate.update = bits.update
 end

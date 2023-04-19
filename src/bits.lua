@@ -11,11 +11,12 @@ local gfx <const> = playdate.graphics
 local spr <const> = playdate.graphics.sprite
 local geo <const> = playdate.geometry
 local line <const> = playdate.geometry.lineSegment
-local poly <const> = playdate.geometry.polygon
+local polygon <const> = playdate.geometry.polygon
 local point <const> = playdate.geometry.point
 
 local draw_line <const> = playdate.graphics.drawLine
-local draw_poly <const> = playdate.graphics.drawPolygon
+local draw_polygon <const> = playdate.graphics.drawPolygon
+local fill_polygon <const> = playdate.graphics.fillPolygon
 
 -- Local Functions
 local function lerp(min, max, t)
@@ -56,10 +57,44 @@ local function lerper2d(p1, p2, steps)
     end
 end
 
+local function make_hexagon(x, y, size)
+    local half_root_3 = 1.7320508075688772 / 2
+    local p = polygon.new(
+        point.new(size, 0),
+        point.new(size * 0.5, size * half_root_3),
+        point.new(size * -0.5, size * half_root_3),
+        point.new(-size, 0),
+        point.new(size * -0.5, -size * half_root_3),
+        point.new(size * 0.5, -size * half_root_3)
+    )
+    p:close()
+    p:translate(x, y)
+    return p
+end
+
+local function make_triangle(x, y, size)
+    local unit_height = 0.866025
+    local p = polygon.new(
+        point.new(size // 2, -size // 2),
+        point.new(0, size // 2),
+        point.new(size, size // 2),
+        point.new(size // 2, -size // 2)
+    )
+    p:translate(x, y)
+    return p
+end
+
 function bits.init()
-    -- local unit_triangle = 1.1547 -- (side length for triangle with height)
-    -- local unit_height = 0.866025
-    -- local hheight <const> = screen_height // 2
+    hex = make_hexagon(200, 120, 100)
+    triangles = {}
+    local center = point.new(200, 120)
+    for i = 1,6 do
+        local j = (i%6)+1
+        -- print(i, j, hex:getPointAt(i), hex:getPointAt(j))
+        local p = polygon.new(center, hex:getPointAt(i), hex:getPointAt(j), center)
+        triangles[i] = p
+    end
+
 
     local max = 200
     local points = {
@@ -84,19 +119,33 @@ function bits.init()
 end
 
 function bits.update()
+    gfx.clear()
+
+    draw_polygon(hex)
+
+    for i = 1,#triangles do
+        draw_polygon(triangles[i])
+    end
+
+
+    -- if true then return end
     local left = new_left()
     local right = new_right()
     local top = new_top()
 
-    gfx.clear()
     for i = 1,9 do
-        draw_line(top.x, top.y, lerp(left.x, right.x, i/10), lerp(left.y, right.y, i/10))
-        draw_line(right.x, right.y, lerp(left.x, top.x, i/10), lerp(left.y, top.y, i/10))
-        draw_line(left.x, left.y, lerp(right.x, top.x, i/10), lerp(right.y, top.y, i/10))
+        -- draw_line(top.x, top.y, lerp(left.x, right.x, i/10), lerp(left.y, right.y, i/10))
+        -- draw_line(right.x, right.y, lerp(left.x, top.x, i/10), lerp(left.y, top.y, i/10))
+        -- draw_line(left.x, left.y, lerp(right.x, top.x, i/10), lerp(right.y, top.y, i/10))
     end
 
-    local p = poly.new(top, left, right, top)
+    -- local p = polygon.new(top, left, right, top)
     -- gfx.setLineWidth(2)
-    draw_poly(p)
+    local t = triangles[math.random(#triangles)]
+    print(t, t:isClosed())
+    fill_polygon(triangles[math.random(#triangles)])
+    -- fill_polygon(triangles[5])
     -- gfx.setLineWidth(1)
+
+
 end
