@@ -9,6 +9,7 @@ import "CoreLibs/crank"
 import "bits"
 
 local function setup()
+    bits.init()
     playdate.update = bits.update
 end
 setup()
