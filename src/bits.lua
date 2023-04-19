@@ -2,16 +2,22 @@ import "CoreLibs/math"
 
 bits = {}
 
-local gfx = playdate.graphics
-local spr = playdate.graphics.sprite
-local geo = playdate.geometry
-local line = playdate.geometry.lineSegment
-local poly = playdate.geometry.polygon
-local point = playdate.geometry.point
+-- Constants
+local screen_width <const> = 400
+local screen_height <const> = 240
 
-local draw_line = playdate.graphics.drawLine
-local draw_poly = playdate.graphics.drawPolygon
+-- Local aliases
+local gfx <const> = playdate.graphics
+local spr <const> = playdate.graphics.sprite
+local geo <const> = playdate.geometry
+local line <const> = playdate.geometry.lineSegment
+local poly <const> = playdate.geometry.polygon
+local point <const> = playdate.geometry.point
 
+local draw_line <const> = playdate.graphics.drawLine
+local draw_poly <const> = playdate.graphics.drawPolygon
+
+-- Local Functions
 local function lerp(min, max, t)
 	return min + (max - min) * t
 end
@@ -51,33 +57,36 @@ local function lerper2d(p1, p2, steps)
 end
 
 function bits.init()
-    -- local q = 1.1547
-    -- local width = 277
-    local top = point.new(200, 0)
-    local left = point.new(61, 239)
-    local right = point.new(338, 239)
+    -- local unit_triangle = 1.1547 -- (side length for triangle with height)
+    -- local unit_height = 0.866025
+    -- local hheight <const> = screen_height // 2
 
-    -- local top1 = lerp2d(left, right, 0.5)
-    -- local left1 = lerp2d(top, right, 0.5)
+    local max = 200
+    local points = {
+        point.new(max // 2 - 1, 0), -- top
+        point.new(0, max - 1), -- left
+        point.new(max - 1, max - 1),
+        -- point.new(screen_height // 2, 0), top
+    }
 
-    local right1 = lerp2d(right, lerp2d(top, left, 0.5), 1.5)
-    local left1 = lerp2d(left, lerp2d(top, right, 0.5), 1.5)
-    local top1 = lerp2d(top, lerp2d(left, right, 0.5), 1.5)
+    local top = points[1]
+    local left = points[2]
+    local right = points[3]
 
-    new_top = lerper2d(top, top1, 100)
-    new_left = lerper2d(left, left1, 100)
-    new_right = lerper2d(right, right1, 100)
+    local right1 = lerp2d(right, lerp2d(top, left, 0.5), 0.3)
+    local left1 = lerp2d(left, lerp2d(top, right, 0.5), 0.3)
+    local top1 = lerp2d(top, lerp2d(left, right, 0.5), 0.3)
+
+    local rate = 50
+    new_top = lerper2d(top, top1, rate)
+    new_left = lerper2d(left, left1, rate)
+    new_right = lerper2d(right, right1, rate)
 end
 
 function bits.update()
-    local top = point.new(200, 0)
-    local left = point.new(61, 239)
-    local right = point.new(338, 239)
-
-    -- local top = new_top()
     local left = new_left()
     local right = new_right()
-    -- local top = new_top()
+    local top = new_top()
 
     gfx.clear()
     for i = 1,9 do
