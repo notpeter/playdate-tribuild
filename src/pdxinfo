@@ -1,0 +1,6 @@
+name=triangle
+author=Peter Tripp
+description=Triangle building demo
+bundleID=net.notpeter.plogo
+version=0.1.1
+buildNumber=1001
