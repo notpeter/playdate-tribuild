@@ -87,6 +87,12 @@ end
 function bits.init()
     hex = make_hexagon(200, 120, 100)
     triangles = {}
+    af = geo.affineTransform.new()
+    af:rotate(1, 200, 120)
+    scale_up = geo.affineTransform.new()
+    scale_up:scale(1.01, 1.01)
+
+
     local center = point.new(200, 120)
     for i = 1,6 do
         local j = (i%6)+1
@@ -121,10 +127,16 @@ end
 function bits.update()
     gfx.clear()
 
+    af:transformPolygon(hex)
     draw_polygon(hex)
 
     for i = 1,#triangles do
-        draw_polygon(triangles[i])
+        af:transformPolygon(triangles[i])
+        if i % 2 == 1 then
+            fill_polygon(triangles[i])
+        else
+            draw_polygon(triangles[i])
+        end
     end
 
 
@@ -141,9 +153,8 @@ function bits.update()
 
     -- local p = polygon.new(top, left, right, top)
     -- gfx.setLineWidth(2)
-    local t = triangles[math.random(#triangles)]
-    print(t, t:isClosed())
-    fill_polygon(triangles[math.random(#triangles)])
+    -- fill_polygon(triangles[math.random(#triangles)])
+
     -- fill_polygon(triangles[5])
     -- gfx.setLineWidth(1)
 
