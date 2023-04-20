@@ -1,4 +1,5 @@
 import "CoreLibs/math"
+import "fills"
 
 bits = {}
 
@@ -128,16 +129,22 @@ function bits.update()
     gfx.clear()
 
     af:transformPolygon(hex)
-    draw_polygon(hex)
 
     for i = 1,#triangles do
         af:transformPolygon(triangles[i])
-        if i % 2 == 1 then
+        if i < 3 then
+            gfx.setPattern(fills[2])
+            fill_polygon(triangles[i])
+        elseif i < 5 then
+            gfx.setPattern(fills[3])
             fill_polygon(triangles[i])
         else
-            draw_polygon(triangles[i])
+            gfx.setPattern(fills[4])
+            fill_polygon(triangles[i])
         end
+        gfx.setColor(playdate.graphics.kColorBlack)
     end
+    draw_polygon(hex)
 
 
     -- if true then return end
