@@ -86,10 +86,10 @@ local function make_triangle(x, y, size)
 end
 
 function bits.init()
-    hex = make_hexagon(200, 120, 100)
+    hex = make_hexagon(200, 120, 50)
     triangles = {}
     af = geo.affineTransform.new()
-    af:rotate(1, 200, 120)
+    af:rotate(2, 200, 120)
     scale_up = geo.affineTransform.new()
     scale_up:scale(1.01, 1.01)
 
@@ -125,9 +125,29 @@ function bits.init()
     new_right = lerper2d(right, right, rate)
 end
 
-function bits.update()
-    gfx.clear()
+local function oscillate(n1, n2, frames)
+    local frame = 0
+    local n = n1
+    return function()
+        frame = frame + 1
+        if frame > frames then
+            frame = 0
+            if n == n1 then
+                n = n2
+            else
+                n = n1
+            end
+        end
+        return n
+    end
+end
 
+o = oscillate(0, 1, 49)
+
+function bits.update()
+
+    gfx.clear()
+    playdate.display.setInverted(o())
     af:transformPolygon(hex)
 
     for i = 1,#triangles do
@@ -153,9 +173,9 @@ function bits.update()
     local top = new_top()
 
     for i = 1,9 do
-        -- draw_line(top.x, top.y, lerp(left.x, right.x, i/10), lerp(left.y, right.y, i/10))
-        -- draw_line(right.x, right.y, lerp(left.x, top.x, i/10), lerp(left.y, top.y, i/10))
-        -- draw_line(left.x, left.y, lerp(right.x, top.x, i/10), lerp(right.y, top.y, i/10))
+        draw_line(top.x, top.y, lerp(left.x, right.x, i/10), lerp(left.y, right.y, i/10))
+        draw_line(right.x, right.y, lerp(left.x, top.x, i/10), lerp(left.y, top.y, i/10))
+        draw_line(left.x, left.y, lerp(right.x, top.x, i/10), lerp(right.y, top.y, i/10))
     end
 
     -- local p = polygon.new(top, left, right, top)
